@@ -1,6 +1,7 @@
 from os import listdir, mkdir, startfile
 from os.path import isfile, join, exists
 from PyPDF2 import PdfFileMerger
+import re
 
 # Input file path and print the pdf files in that path
 path = input("Enter the folder location: ")
@@ -9,10 +10,18 @@ print('\nList of PDF Files:\n')
 for file in pdffiles:
     print(file)
 
-# Input the name of the result file
-resultFile = input("\nEnter the name of the result file : ")
-if '.pdf' not in resultFile:
-    resultFile += '.pdf'
+fileName = pdffiles[0]
+
+#"_([A-Za-z0-9]+( [A-Za-z0-9]+)+)_([A-Za-z0-9]+( [A-Za-z0-9]+)+)\.pdf"gm
+
+m = re.search('_([A-Za-z0-9]+( [A-Za-z0-9]+)+)_([A-Za-z0-9]+( [A-Za-z0-9]+)+)\.pdf', fileName)
+mCleaner = re.search('([A-Za-z0-9]+( [A-Za-z0-9]+)+)_([A-Za-z0-9]+( [A-Za-z0-9]+)+)',m.group(0))
+print(mCleaner.group(0))
+newFileName = mCleaner.group(0)
+#Input the name of the result file
+#resultFile = input("\nEnter the name of the result file : ")
+if '.pdf' not in newFileName:
+    newFileName += '.pdf'
 
 # Append the pdf files
 merger = PdfFileMerger()
@@ -24,9 +33,9 @@ if not exists(path+'\\Output'):
     mkdir(path+'\\Output')
 
 # Write the merged result file to the Output directory
-merger.write(path+'\\Output\\'+resultFile)
+merger.write(path+'\\Output\\'+newFileName)
 merger.close()
 
 # Launch the result file
-print('\n'+resultFile, 'Successfully created!!! at ', path+'\\Output\\')
-startfile(path+'\\Output\\'+resultFile)
+print('\n'+newFileName, 'Successfully created!!! at ', path+'\\Output\\')
+startfile(path+'\\Output\\'+newFileName)
