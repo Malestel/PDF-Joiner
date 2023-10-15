@@ -4,6 +4,7 @@ from PyPDF2 import PdfFileMerger
 import re
 import os
 import glob
+import shutil
 
 #holds the order from the original directory
 rootDirStack = []
@@ -47,14 +48,26 @@ def arrayLoader(filePath):
         else:
             pdfJoin(filePath)
 
-            
-# Input file path and print the pdf files in that path
-rootdir = input("Enter the folder location: ")
+def joinPDF():
+    # Input file path and print the pdf files in that path
+    rootdir = input("Enter the folder location: ")
+    arrayLoader(rootdir)
+    # for file in os.listdir(rootdir):
+    #     d = os.path.join(rootdir, file)
+    #     if os.path.isdir(d):
+    #         rootDirStack.append(d)
 
-for file in os.listdir(rootdir):
-    d = os.path.join(rootdir, file)
-    if os.path.isdir(d):
-        rootDirStack.append(d)
+    for folders in rootDirStack:
+        arrayLoader(folders)
 
-for folders in rootDirStack:
-    arrayLoader(folders)
+def deleteEmptyFolder():
+    deleteInput = input("Enter the delete folder location: ")
+    os.rmdir(deleteInput)
+
+def moveFileUp():
+    moveInput = input("Enter the move folder location: ")
+    destination = moveInput.rsplit('\\',1)
+    print(destination[0])
+
+moveFileUp()
+#joinPDF()
