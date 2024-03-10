@@ -5,6 +5,7 @@ import re
 import os
 import glob
 import shutil
+import string
 
 #holds the order from the original directory
 rootDirStack = []
@@ -60,14 +61,51 @@ def joinPDF():
     for folders in rootDirStack:
         arrayLoader(folders)
 
-def deleteEmptyFolder():
-    deleteInput = input("Enter the delete folder location: ")
-    os.rmdir(deleteInput)
 
-def moveFileUp():
-    moveInput = input("Enter the move folder location: ")
-    destination = moveInput.rsplit('\\',1)
-    print(destination[0])
 
-moveFileUp()
-#joinPDF()
+def purgeArrayLoader(filePath):
+    splitDirty = filePath.rsplit('\\',1)
+    if (str("Output") == str(splitDirty[1])):
+        moveAndEmpty(filePath)
+
+    else:
+        for file in os.listdir(filePath):
+            d = os.path.join(filePath, file)
+            if os.path.isdir(d):
+                rootDirStack.append(d)
+
+
+def moveAndEmpty(filePath):
+    sourcePath = filePath.rsplit('\\',1)
+    for file in os.listdir(filePath):
+        d = os.path.join(filePath, file)
+        if os.path.isfile(d):
+            dest = shutil.move(d,sourcePath[0], copy_function = shutil.copytree)
+    os.rmdir(filePath)
+
+
+def purgeOutputFolder():
+    rootdir = input("Enter the folder location: ")
+    purgeArrayLoader(rootdir)
+
+    for folders in rootDirStack:
+        purgeArrayLoader(folders)
+
+# def deleteEmptyFolder():
+#     deleteInput = input("Enter the delete folder location: ")
+#     os.rmdir(deleteInput)
+
+# def moveFileUp():
+#     moveInput = input("Enter the move folder location: ")
+#     destination = moveInput.rsplit('\\',1)
+#     print(destination[0])
+
+
+answer = input("Enter 1 to Join or 2 to purge Output:")
+match str(answer):
+    case "1":
+        joinPDF()
+    case "2":
+        purgeOutputFolder()
+    case _:
+        print("Sorry, invalid request.")
