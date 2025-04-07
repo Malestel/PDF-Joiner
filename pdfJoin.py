@@ -1,6 +1,6 @@
 from os import listdir, mkdir, startfile
 from os.path import isfile, join, exists
-from PyPDF2 import PdfFileMerger
+from PyPDF2 import PdfMerger
 import re
 import os
 import glob
@@ -14,7 +14,6 @@ def pdfJoin(path):
     pdffiles = [f for f in listdir(path) if isfile(join(path, f)) and '.pdf' in f]
 
     fileName = pdffiles[0]
-
     m = re.search('(?<=_)(.*)(?<=_)(.*)(?=.pdf)', fileName)
     newFileName = m.group(0)
     #Input the name of the result file
@@ -22,7 +21,7 @@ def pdfJoin(path):
         newFileName += '.pdf'
 
     # Append the pdf files
-    merger = PdfFileMerger()
+    merger = PdfMerger()    
     for pdf in pdffiles:
         merger.append(path+'\\'+pdf)
 
